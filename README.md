@@ -1,2 +1,1 @@
-# LearnReact
 # LearnRedux

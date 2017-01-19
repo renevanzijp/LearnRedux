@@ -11,8 +11,15 @@ console.log('Starting redux example');
 // Reducers are pure functions. The take  state + action to compute new state.
 var reducer = (state = {name: 'Anonymous'}, action ) => {
     // state = state || {name: 'Anonymous'} ;
-
-    return state;
+    switch (action.type) {
+        case 'CHANGE_NAME':
+            return {
+                ...state,
+                name: action.name
+            }
+        default:
+            return state;
+    }
 };
 
 // one store per app..
@@ -21,3 +28,12 @@ var store = redux.createStore(reducer);
 var currentState = store.getState();
 
 console.log(currentState);
+
+var action = {
+    type: 'CHANGE_NAME',
+    name: "Kees"
+};
+
+store.dispatch(action);
+
+console.log(store.getState());

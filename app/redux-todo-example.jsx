@@ -10,14 +10,30 @@ var stateDefault =
     };
 
 
-var reducer = (state = stateDefault, action ) => {
-
-    return state;
+var reducer = (state = stateDefault, action) => {
+    switch (action.type) {
+        case 'CHANGE_SEARCHTEXT':
+            return {
+                ...state,
+                searchText: action.searchText
+            }
+        default:
+            return state;
+    }
 };
 
 
+// one store per app..
 var store = redux.createStore(reducer);
 
-var currentState = store.getState();
+console.log(store.getState());
 
-console.log(currentState);
+var action = {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar mij",
+
+};
+
+store.dispatch(action);
+
+console.log(store.getState());
