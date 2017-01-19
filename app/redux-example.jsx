@@ -23,7 +23,9 @@ var reducer = (state = {name: 'Anonymous'}, action ) => {
 };
 
 // one store per app..
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
 var currentState = store.getState();
 
@@ -33,7 +35,19 @@ var action = {
     type: 'CHANGE_NAME',
     name: "Kees"
 };
+var unsubscribe = store.subscribe( () =>{
+    var state = store.getState()
+    console.log("aha, iets veranderd", state);
+});
 
 store.dispatch(action);
 
-console.log(store.getState());
+// unsubscribe();
+
+store.dispatch(
+    {
+        type: 'CHANGE_NAME',
+        name: "Piet"
+    });
+
+

@@ -24,16 +24,63 @@ var reducer = (state = stateDefault, action) => {
 
 
 // one store per app..
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
-console.log(store.getState());
+console.log("wat is je state: ", store.getState());
 
 var action = {
     type: 'CHANGE_SEARCHTEXT',
     searchText: "zoek naar mij",
 
 };
+var unsubscribe = store.subscribe( () =>{
+    var state = store.getState()
+    console.log("aha, iets veranderd", state);
+    document.getElementById("app").innerHTML = state.searchText;
+});
 
 store.dispatch(action);
 
-console.log(store.getState());
+// unsubscribe();
+
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar iets anders dan mij",
+
+});
+
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: " naar iets anders dan mij",
+
+});
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek  iets anders dan mij",
+
+});
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar  anders dan mij",
+
+});
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar iets  dan mij",
+
+});
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar iets anders  mij",
+
+});
+store.dispatch( {
+    type: 'CHANGE_SEARCHTEXT',
+    searchText: "zoek naar iets anders dan ",
+
+});
+
+
+
