@@ -9,7 +9,16 @@ console.log('Starting redux example');
 // Actions are js object, with a type and some data (data required to update the state).
 
 // Reducers are pure functions. The take  state + action to compute new state.
-var reducer = (state = {name: 'Anonymous'}, action ) => {
+
+var defaultState = {
+    name: "Anonymous",
+    hobbies: [],
+    movies: []
+};
+var nextHobbyId = 1;
+var nextMovieId = 1;
+
+var reducer = (state = defaultState, action) => {
     // state = state || {name: 'Anonymous'} ;
     switch (action.type) {
         case 'CHANGE_NAME':
@@ -17,7 +26,38 @@ var reducer = (state = {name: 'Anonymous'}, action ) => {
                 ...state,
                 name: action.name
             }
-        default:
+        case 'ADD_HOBBY':
+            return {
+                ...state,
+                hobbies: [...state.hobbies,
+                    {
+                        id: nextHobbyId++,
+                        hobby: action.hobby
+                    }
+                ]
+            }
+        case 'ADD_MOVIE':
+            return {
+                ...state,
+                movies: [...state.movies,
+                    {
+                        id: nextMovieId++,
+                        movie: action.title,
+                        genre: action.genre
+                    }
+                ]
+            }
+        case 'REMOVE_HOBBY':
+            return {
+                ...state,
+                hobbies: state.hobbies.filter( (hobby) => hobby.id !== action.id)
+            }
+        case 'REMOVE_MOVIE':
+            return {
+                ...state,
+                movies: state.movies.filter( (movie) => movie.id !== action.id)
+            }
+            default:
             return state;
     }
 };
@@ -44,10 +84,49 @@ store.dispatch(action);
 
 // unsubscribe();
 
+
+store.dispatch(
+    {
+        type: 'ADD_HOBBY',
+        hobby: "Skating"
+    });
+store.dispatch(
+    {
+        type: 'ADD_HOBBY',
+        hobby: "diving"
+    });
+store.dispatch(
+    {
+        type: 'ADD_HOBBY',
+        hobby: "chess"
+    });
 store.dispatch(
     {
         type: 'CHANGE_NAME',
         name: "Piet"
     });
+store.dispatch(
+    {
+        type: 'ADD_MOVIE',
+        title: "Middas in het bos",
+        genre: "kids"
 
+    });
+store.dispatch(
+    {
+        type: 'ADD_MOVIE',
+        title: "Middas in het bos II",
+        genre: "kids"
 
+    });
+store.dispatch(
+    {
+        type: 'REMOVE_HOBBY',
+        id: 2
+    });
+
+store.dispatch(
+    {
+        type: 'REMOVE_MOVIE',
+        id: 1
+    });

@@ -8,7 +8,7 @@ var stateDefault =
         showCompleted: false,
         todos: []
     };
-
+var nextTodoId = 1;
 
 var reducer = (state = stateDefault, action) => {
     switch (action.type) {
@@ -16,6 +16,16 @@ var reducer = (state = stateDefault, action) => {
             return {
                 ...state,
                 searchText: action.searchText
+            }
+        case 'ADD_TODO':
+            return {
+                ...state,
+                todos: [...state.todos,
+                    {
+                        id: nextTodoId++,
+                        todo: action.todo
+                    }
+                ]
             }
         default:
             return state;
@@ -38,7 +48,7 @@ var action = {
 var unsubscribe = store.subscribe( () =>{
     var state = store.getState()
     console.log("aha, iets veranderd", state);
-    document.getElementById("app").innerHTML = state.searchText;
+    document.getElementById("app").innerHTML = state.searchText + ' ' + state.todos;
 });
 
 store.dispatch(action);
@@ -81,6 +91,22 @@ store.dispatch( {
     searchText: "zoek naar iets anders dan ",
 
 });
+store.dispatch(
+    {
+        type: 'ADD_TODO',
+        todo: "Cleaning the house"
+    });
 
 
+store.dispatch(
+    {
+        type: 'ADD_TODO',
+        todo: "Cleaning the cat"
+    });
+
+store.dispatch(
+    {
+        type: 'ADD_TODO',
+        todo: "Feeding the cat"
+    });
 
