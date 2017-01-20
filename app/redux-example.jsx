@@ -10,57 +10,7 @@ console.log('Starting redux example');
 
 // Reducers are pure functions. The take  state + action to compute new state.
 
-var defaultState = {
-    name: "Anonymous",
-    hobbies: [],
-    movies: []
-};
-var nextHobbyId = 1;
-var nextMovieId = 1;
-
-var oldOneBigReducer = (state = defaultState, action) => {
-    // state = state || {name: 'Anonymous'} ;
-    switch (action.type) {
-        case 'CHANGE_NAME':
-            return {
-                ...state,
-                name: action.name
-            }
-        case 'ADD_HOBBY':
-            return {
-                ...state,
-                hobbies: [...state.hobbies,
-                    {
-                        id: nextHobbyId++,
-                        hobby: action.hobby
-                    }
-                ]
-            }
-        case 'ADD_MOVIE':
-            return {
-                ...state,
-                movies: [...state.movies,
-                    {
-                        id: nextMovieId++,
-                        movie: action.title,
-                        genre: action.genre
-                    }
-                ]
-            }
-        case 'REMOVE_HOBBY':
-            return {
-                ...state,
-                hobbies: state.hobbies.filter( (hobby) => hobby.id !== action.id)
-            }
-        case 'REMOVE_MOVIE':
-            return {
-                ...state,
-                movies: state.movies.filter( (movie) => movie.id !== action.id)
-            }
-            default:
-            return state;
-    }
-};
+// Name reducer & action generators...
 var nameReducer =  (state = 'Anonymous', action) => {
     switch (action.type) {
         case 'CHANGE_NAME':
@@ -69,7 +19,15 @@ var nameReducer =  (state = 'Anonymous', action) => {
             return state;
     }
 };
+var changeName = (name)  => {
+    return {
+        type: 'CHANGE_NAME',
+        name
+    }
+};
 
+// Hobby reducer & action generators...
+var nextHobbyId = 1;
 var hobbiesReducer = (state = [], action) => {
     switch (action.type) {
         case 'ADD_HOBBY':
@@ -86,7 +44,22 @@ var hobbiesReducer = (state = [], action) => {
             return state;
     }
 };
+var addHobby = (hobby) => {
+    return {
+        type: 'ADD_HOBBY',
+        hobby
+    }
+};
+var removeHobby = (id) => {
+  return   {
+      type: 'REMOVE_HOBBY',
+      id
+  }
 
+};
+
+// Movie generator & action generators...
+var nextMovieId = 1;
 var moviesReducer =  (state = [] , action) => {
     switch (action.type) {
         case 'ADD_MOVIE':
@@ -105,6 +78,20 @@ var moviesReducer =  (state = [] , action) => {
     }
 };
 
+var addMovie = (title, genre) => {
+    return {
+        type: 'ADD_MOVIE',
+        title,
+        genre
+    }
+};
+var removeMovie =  (id) => {
+    return {
+        type: 'REMOVE_MOVIE',
+        id
+    }
+};
+
 var reducer = redux.combineReducers(
     {
         name: nameReducer,
@@ -118,66 +105,22 @@ var store = redux.createStore(reducer, redux.compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 
-var currentState = store.getState();
+console.log(store.getState());
 
-console.log(currentState);
 
-var action = {
-    type: 'CHANGE_NAME',
-    name: "Kees"
-};
 var unsubscribe = store.subscribe( () =>{
     var state = store.getState()
     console.log("aha, iets veranderd", state);
 });
 
-store.dispatch(action);
+store.dispatch(changeName('Kees'));
+store.dispatch(addHobby('skating'));
+store.dispatch(addHobby('diving'));
+store.dispatch(addHobby('chess'));
+store.dispatch(changeName('Piet'));
+store.dispatch(addMovie("Middas in het bos", "kids"));
+store.dispatch(addMovie( "Middas in het bos II","kids"));
+store.dispatch(removeHobby(2));
+store.dispatch(removeMovie(1));
 
-// unsubscribe();
-
-
-store.dispatch(
-    {
-        type: 'ADD_HOBBY',
-        hobby: "Skating"
-    });
-store.dispatch(
-    {
-        type: 'ADD_HOBBY',
-        hobby: "diving"
-    });
-store.dispatch(
-    {
-        type: 'ADD_HOBBY',
-        hobby: "chess"
-    });
-store.dispatch(
-    {
-        type: 'CHANGE_NAME',
-        name: "Piet"
-    });
-store.dispatch(
-    {
-        type: 'ADD_MOVIE',
-        title: "Middas in het bos",
-        genre: "kids"
-
-    });
-store.dispatch(
-    {
-        type: 'ADD_MOVIE',
-        title: "Middas in het bos II",
-        genre: "kids"
-
-    });
-store.dispatch(
-    {
-        type: 'REMOVE_HOBBY',
-        id: 2
-    });
-
-store.dispatch(
-    {
-        type: 'REMOVE_MOVIE',
-        id: 1
-    });
+unsubscribe();
